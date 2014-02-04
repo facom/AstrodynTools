@@ -1,6 +1,6 @@
 CPP=g++
-CFLAGS=-I. -w
-LFLAGS=-lm
+CFLAGS=-I. -w -Iutil/include -Iutil/include/gsl
+LFLAGS=-lm util/lib/cspice.a util/lib/csupport.a util/lib/libgsl.a util/lib/libgslcblas.a util/lib/novas.a
 
 clean:
 	@echo "Cleaning..."

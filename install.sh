@@ -58,7 +58,7 @@ fi
 cd $DIR
 
 ########################################
-#INSTALL NOVAS
+#INSTALL PYTHON NOVAS
 ########################################
 echo "Installing Python Novas..."
 if [ ! -d util/lib/python2.7 ];then
@@ -68,6 +68,23 @@ if [ ! -d util/lib/python2.7 ];then
     CC=gcc python setup.py build install --prefix=$DIR/util
     cd ..
     rm -rf novas
+    echo "Done."
+else
+    echo "Already installed."
+fi
+cd $DIR
+
+########################################
+#INSTALL PYTHON NOVAS
+########################################
+echo "Installing C Novas..."
+if [ ! -d util/lib/novas.a ];then
+    cd util
+    tar zxf novasc.tgz
+    cd novasc
+    make install
+    cd ..
+    rm -rf novasc
     echo "Done."
 else
     echo "Already installed."
