@@ -5,7 +5,13 @@ LFLAGS=-lm
 clean:
 	@echo "Cleaning..."
 	@find . -name "*~" -exec rm -rf {} \;
+	@find . -name "#" -exec rm -rf {} \;
 	@rm -rf *.pyc *.out *.exe
+
+reset:
+	@echo "Reseting directory..."
+	@rm -rf MercuPy
+	@make -C util reset
 
 %.exe:%.opp
 	$(CPP) $(LFLAGS) $^ -o $@
@@ -21,6 +27,14 @@ clean:
 
 .constants:constants.py
 	@bash .constants.sh
+
+install:
+	@echo "Installing components..."
+	@bash -x .install.sh
+
+installadmin:
+	@echo "Installing components..."
+	@bash .install.sh admin
 
 commit:
 	@echo "Commiting..."
