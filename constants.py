@@ -16,3 +16,8 @@ Rmoon=1.73710E6;"m";
 
 rmoon=3.844E8;"m";
 
+Msun=1.98E30;"kg";
+
+Rsun=6.96E8;"m";
+
+rearth=1.496E11;"m";
