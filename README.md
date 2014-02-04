@@ -15,7 +15,7 @@ Get a copy of from https://github.com/facom/AstrodynTools:
 Install util tools:
 	 
       $ cd AstrodynTools
-      $ make install
+      $ source install.sh
 
 Update to the last version:
        

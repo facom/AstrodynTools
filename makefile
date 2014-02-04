@@ -30,11 +30,11 @@ reset:
 
 install:
 	@echo "Installing components..."
-	@bash -x .install.sh
+	@bash install.sh
 
 installadmin:
 	@echo "Installing components..."
-	@bash .install.sh admin
+	@bash install.sh admin
 
 commit:
 	@echo "Commiting..."

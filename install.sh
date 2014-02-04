@@ -57,3 +57,25 @@ else
 fi
 cd $DIR
 
+########################################
+#INSTALL NOVAS
+########################################
+echo "Installing Python Novas..."
+if [ ! -d util/lib/python2.7 ];then
+    cd util
+    tar zxf novas.tgz
+    cd novas
+    CC=gcc python setup.py build install --prefix=$DIR/util
+    cd ..
+    rm -rf novas
+    echo "Done."
+else
+    echo "Already installed."
+fi
+cd $DIR
+
+echo "Setting python path..."
+cmd="export PYTHONPATH=\$PYTHONPATH:util/lib/python2.7/site-packages"
+echo "Set path as: $cmd"
+echo $cmd > /tmp/path
+source /tmp/path
