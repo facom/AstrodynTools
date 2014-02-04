@@ -20,4 +20,4 @@ Msun=1.98E30;"kg";
 
 Rsun=6.96E8;"m";
 
-rearth=1.496E11;"m";
+rsun=1.496E11;"m";
