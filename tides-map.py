@@ -4,6 +4,7 @@ from constants import *
 from numpy import *
 from matplotlib.pyplot import *
 from mpl_toolkits.basemap import Basemap as map,shiftgrid as grid
+from sys import exit
 
 close("all")
 
@@ -42,6 +43,7 @@ def tide(tp,fp,tm,fm):
         0.5*(3*cos(tp)**2-1)*0.5*(3*cos(tm)**2-1)+\
         0.75*sin(tp)**2*sin(tm)**2*cos(2*(fp-fm))+\
         0.75*sin(2*tp)*sin(2*tm)*cos(fp-fm)
+    print "\ttp=",tp,"phase=",phase
     heq=csi*phase
     return heq
 
@@ -68,17 +70,20 @@ for i in xrange(nlats):
     for j in xrange(nlons):
         tp=(90.0-lats[i])*DEG
         fp=lons[j]*DEG
-        H[j,i]=tide(tp,fp,0.0*DEG,0.0*DEG)
+        print "Calculating at: lat = %e, theta = %e"%(lats[j],tp)
+        H[i,j]=tide(tp,fp,90.0*DEG,90.0*DEG)
+        print "\tTide: %e"%H[i,j]
+    #exit(0)
 
 H,lons=grid(180.0,H,lons,start=False)
 LONS,LATS=meshgrid(lons,lats)
 xlons,xlats=m(LONS,LATS)
-c=m.contour(xlons,xlats,H,20,linewidths=0.5)
-cf=m.contourf(xlons,xlats,H,c.levels)
+c=m.contour(xlons,xlats,H,10,linewidths=0.5)
+#c=m.contourf(xlons,xlats,H,c.levels)
 
 #BAR
 cax=axes([0.05,0.1,0.9,0.1])
-cbar=colorbar(cf,drawedges=False,cax=cax,orientation='horizontal',
+cbar=colorbar(c,drawedges=False,cax=cax,orientation='horizontal',
               format='%+.1e')
 cbar.ax.tick_params(labelsize=8) 
 

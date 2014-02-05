@@ -6,7 +6,7 @@ clean:
 	@echo "Cleaning..."
 	@find . -name "*~" -exec rm -rf {} \;
 	@find . -name "#" -exec rm -rf {} \;
-	@rm -rf *.pyc *.out *.exe
+	@rm -rf *.pyc *.out *.exe *.png
 
 reset:
 	@echo "Reseting directory..."

@@ -14,14 +14,14 @@ def P2(psi):
 ###################################################
 #SCRIPT
 ###################################################
-#"""MOON-EARTH
+"""MOON-EARTH
 mp=Mearth
 Rp=Rearth
 a=rmoon
 ms=Mmoon
 #"""
 
-"""SUN-EARTH
+#"""SUN-EARTH
 mp=Mearth
 Rp=Rearth
 a=rsun
@@ -55,10 +55,11 @@ savefig("equilibrium-tide.png")
 
 figure()
 psi=linspace(0,2*pi,100)
-xt=(1+csi*P2(psi))*cos(psi)
-yt=(1+csi*P2(psi))*sin(psi)
+Rg=Rp/10000000
+xt=(Rg+csi*P2(psi))*cos(psi)
+yt=(Rg+csi*P2(psi))*sin(psi)
 plot(xt,yt,label='Tide')
-plot(cos(psi),sin(psi),label='Equilibrium')
+plot(Rg*cos(psi),Rg*sin(psi),label='Equilibrium')
 legend()
 savefig("tide-figure.png")
 
