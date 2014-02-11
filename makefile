@@ -40,3 +40,7 @@ commit:
 	@echo "Commiting..."
 	@git commit -am "Commit"
 	@git push origin master
+
+pull:
+	@git rest --hard HEAD
+	@git pull
