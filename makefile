@@ -42,5 +42,5 @@ commit:
 	@git push origin master
 
 pull:
-	@git rest --hard HEAD
+	@git reset --hard HEAD
 	@git pull
