@@ -32,4 +32,3 @@ xlabel('$r/R_p$')
 ylabel('$V$ (j/kg)')
 savefig("potential-shell.png")
 
-"""
