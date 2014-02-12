@@ -14,14 +14,14 @@ def P2(psi):
 ###################################################
 #SCRIPT
 ###################################################
-"""MOON-EARTH
+#"""MOON-EARTH
 mp=Mearth
 Rp=Rearth
 a=rmoon
 ms=Mmoon
 #"""
 
-#"""SUN-EARTH
+"""SUN-EARTH
 mp=Mearth
 Rp=Rearth
 a=rsun
