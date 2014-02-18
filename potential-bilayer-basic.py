@@ -77,7 +77,7 @@ for theta in [0,45,90]:
 legend()
 savefig("core-potential.png")
 
-#OCEAN POTENTIAL CONTOURS
+#CORE POTENTIAL CONTOURS
 figure()
 range=(-1.2,1.2,100)
 contourPotential(Vc,B,range=range,levels=linspace(Vc(0,0),Vc(A,0),10))
