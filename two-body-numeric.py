@@ -1,7 +1,7 @@
 from util import *
 from scipy.integrate import odeint
 
-#
+#List
 def twob(y,t,params):
     mu=params['mu']
     dydt=[0.0,0.0,0.0,0.0]
