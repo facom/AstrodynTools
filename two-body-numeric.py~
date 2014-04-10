@@ -1,2 +1,0 @@
-from util import *
-from scipy.integrate import odeint
