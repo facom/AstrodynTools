@@ -125,3 +125,22 @@ if __name__=='__main__':
     ylabel('$V$ (j/kg)')
     savefig("test-VintVext.png")
 
+###################################################
+#VECTOR
+###################################################
+def vec2to3(r):
+    return concatenate((r,[0]))
+
+def dot2(r1,r2):
+    r1_3=concatenate((r1,[0]))
+    r2_3=concatenate((r2,[0]))
+    return dot(r1_3,r2_3)
+
+def cross2(r1,r2):
+    r1_3=concatenate((r1,[0]))
+    r2_3=concatenate((r2,[0]))
+    c=cross(r1_3,r2_3)
+    return c[1:]
+
+def magvec(r):
+    return dot(r,r)**0.5
