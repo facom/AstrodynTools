@@ -59,7 +59,7 @@ y=r*sin(f)
 ax.plot(x,y)
 ax.axhline(0,linestyle='--',color='k')
 ax.axvline(0,linestyle='--',color='k')
-inscribed=Circle((-a*e,0),b,facecolor='none',edgecolor='r',linestyle='dashed')
+mean=Circle((0,0),a,facecolor='none',edgecolor='r',linestyle='dashed')
 cinscribed=Circle((-a*e,0),a,facecolor='none',edgecolor='b',linestyle='dashed')
 ax.add_patch(inscribed)
 ax.add_patch(cinscribed)
@@ -98,7 +98,7 @@ def animate(iframe):
     y=a*sin(E)
     particle_eccentric.set_data(x,y)
 
-    x=a*(cos(M)-e)
+    x=a*cos(M)
     y=b*sin(M)
     particle_mean.set_data(x,y)
 
