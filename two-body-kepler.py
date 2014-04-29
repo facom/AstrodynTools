@@ -8,7 +8,7 @@ t=linspace(0,2*pi,100)
 
 #ORBIT PROPERTIES
 a=1.0
-e=0.3
+e=0.7
 p=a*(1-e**2)
 n=(MU/a**3)**0.5
 
@@ -27,7 +27,7 @@ f=2*arctan(((1+e)/(1-e))**0.5*tan(E/2))
 r=p/(1+e*cos(f))
 
 #TRAJECTORY
-x=r*cos(f)-a*e
+x=r*cos(f)
 y=r*sin(f)
 
 figure(figsize=(6,6))
@@ -41,17 +41,17 @@ savefig("two-body-kepler.png")
 from scipy.optimize import bisect
 
 def keplerEquation(E,M,e):
-    eq=E-e*sin(E)-M
-    return eq
+    fe=E-e*sin(E)-M
+    return fe
 
 #COMPARE SERIES
 M=np.linspace(0,2*pi)
-Ebis=[bisect(keplerEquation,0,2*pi,args=(Mv,e)) for Mv in M]
+Ebis=[bisect(keplerEquation,0.0,2*pi,args=(Mv,e)) for Mv in M]
 Eser=Eseries(M,e)
 
 figure()
 plot(M,Ebis,label='Bisection')
-plot(M,Eser,label='Bisection')
+plot(M,Eser,label='Series')
 legend(loc='best')
 savefig("kepler-equation.png")
 

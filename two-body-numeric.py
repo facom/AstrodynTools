@@ -19,7 +19,7 @@ def twob(y,t,params):
     return dydt
     
 #NUMERIC SOLUTION
-y=[1.0,0.0,0.0,1.2]
+y=[1.0,0.0,0.0,1.02]
 t=linspace(0,20.0,100)
 params=dict(mu=MU)
 solution=odeint(twob,y,t,args=(params,))
@@ -82,12 +82,16 @@ epsilon=array(eps).mean()
 e=magvec(E)
 p=h**2/MU
 a=p/(1-e**2)
+n=(MU/a**3)**0.5
+P=2*pi/n
 
 print "Angular momentum: %e"%h
 print "Energy: %e"%epsilon
 print "Eccentricity: %e"%e
 print "Semi latus rectum: %e"%p
 print "Semi major axis: %e"%a
+print "Period: %e"%P
+print "Orbital mean angular velocity: %e"%n
 
 #COMPARE NUMERIC WITH GEOMETRICAL SOLUTION
 f=linspace(0,2*pi,100)
@@ -95,9 +99,20 @@ r=p/(1+e*cos(f))
 x=r*cos(f)
 y=r*sin(f)
 
+#r vs. f
 figure()
-plot(solution[:,0],solution[:,1],label='Numeric')
-plot(x,y,label='Geometric')
+plot(f,r)
+savefig("rvsf.png")
+
+#rdot vs. f
+rdot=n*a/r*sqrt(a**2*e**2-(r-a)**2)
+figure()
+plot(f,rdot)
+savefig("rdotvsf.png")
+
+figure()
+#plot(solution[:,0],solution[:,1],label='Numeric')
+plot(x,y,'b+',label='Geometric')
 legend(loc='best')
 savefig("two-body-numeric-geometric.png")
 
@@ -108,5 +123,15 @@ v2visviva=MU*(2/r-1/a)
 figure()
 plot(t,v2,label='Numeric')
 plot(t,v2visviva,label='Vis-viva')
+ymin,ymax=ylim()
+ylim((0,ymax))
 legend(loc='best')
 savefig("two-body-visviva.png")
+
+#f vs. E
+e=0.99
+E=linspace(0,2*pi)
+f=2*arctan(sqrt((1+e)/(1-e))*tan(E/2))
+figure()
+plot(f,E)
+savefig("Evsf.png")
