@@ -61,7 +61,7 @@ ax.axhline(0,linestyle='--',color='k')
 ax.axvline(0,linestyle='--',color='k')
 mean=Circle((0,0),a,facecolor='none',edgecolor='r',linestyle='dashed')
 cinscribed=Circle((-a*e,0),a,facecolor='none',edgecolor='b',linestyle='dashed')
-ax.add_patch(inscribed)
+ax.add_patch(mean)
 ax.add_patch(cinscribed)
 
 #########################################
@@ -99,7 +99,7 @@ def animate(iframe):
     particle_eccentric.set_data(x,y)
 
     x=a*cos(M)
-    y=b*sin(M)
+    y=a*sin(M)
     particle_mean.set_data(x,y)
 
     return particle_real,particle_eccentric,particle_mean
