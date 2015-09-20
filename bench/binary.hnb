@@ -1,0 +1,30 @@
+#
+# $Id: binary.hnb,v 1.2 2002/05/08 20:29:53 rauch Exp $
+#
+# Input file for testing binary file generation and conversion.
+#
+AngleUnit:  deg         # deg, rad
+LengthUnit: 1.0*AU      # m, AU, pc
+MassUnit:   2e30 kg     # g, Msun
+TimeUnit:   yr          # s, h, d, yr
+StepSize:   0.01        # time step
+Tfinal  =   5000        # final integ. time
+M  =  1                 # dominant mass
+N  =  2                 # number of objects
+
+# INITIAL CONDITIONS
+InputOrder: Mass SemiMajorAxis  Eccentricity Inclination \
+                 LongAscendNode ArgPeriapse  MeanAnomaly
+
+1e-8    3.5     0.5     30     0.0     0.0     0.0
+
+# OUTPUT FILES
+OutputFiles:    body%d.dat
+OutputInterval: 100 steps
+OutputCoord:    Barycentric
+OutputOrder:    time x1 x2 x3 semi ecc longasc
+OutputData:	float
+
+# ENERGY FILE
+EnergyFile:     energy.dat
+EnergyInterval: 100 steps
