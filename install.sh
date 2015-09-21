@@ -24,7 +24,7 @@ cd $DIR
 echo "Installing SPICE..."
 if [ ! -e util/lib/cspice.a ];then
     cd util
-    tar Zxf cspice.tar.Z
+    tar zxf cspice-32bit.tar.gz
     cd cspice
     ./makeall.csh
     mv include/* ../include
