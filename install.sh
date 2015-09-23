@@ -4,9 +4,9 @@ DIR=$(pwd)
 ########################################
 #INSTALL MAKEFILE
 ########################################
-if [ ! -e makefile ];then
-    cp makefile.in makefile
-    echo "Adjust your architecture in makefile..."
+if [ ! -e compiler ];then
+    cp compiler.in compiler
+    echo "Adjust your architecture in 'compiler'..."
     exit 0
 fi
 

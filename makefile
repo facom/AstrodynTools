@@ -1,8 +1,4 @@
-ARCH=32
-#ARCH=64
-CPP=g++
-CFLAGS=-I. -w -Iutil/include -Iutil/include/gsl
-LFLAGS=-lm util/lib/cspice$(ARCH).a util/lib/csupport$(ARCH).a util/lib/libgsl.a util/lib/libgslcblas.a util/lib/novas.a
+include compiler
 
 clean:
 	@echo "Cleaning..."
