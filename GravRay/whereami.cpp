@@ -67,7 +67,7 @@ int main(int argc,char* argv[])
   //GET TOPOCENTRIC TRANSFORM MATRIX
   ////////////////////////////////////////////////////
   SpiceDouble hm[3][3],hi[3][3];
-  hormat(lat,lon,hm,hi);
+  horgeo(lat,lon,hm,hi);
 
   ////////////////////////////////////////////////////
   //VELOCITY OF OBSERVER
@@ -116,6 +116,9 @@ int main(int argc,char* argv[])
   printf("Position observer w.r.t. SSB Epoch: %s\n",vec2str(observerSSBEpoch,"%.17e"));
   mxv_c(M_J2000_Epoch,observerSSBJ2000+3,observerSSBEpoch+3);
   printf("\tVelocity observer w.r.t. SSB Epoch: %s\n",vec2str(observerSSBEpoch+3,"%.17e"));
+
+  //PLAIN FORMAT
+  printf("Plain:\n%.17e %s\n",t,vec2strn(observerSSBJ2000,6,"%.17e"));
 
   return 0;
 }

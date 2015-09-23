@@ -39,6 +39,16 @@ http://naif.jpl.nasa.gov/pub/naif/
 #define ATTEMPTS 12 /*SEE NUMBER_OF_STEPS*/
 
 //////////////////////////////////////////
+//CONSTANTS
+//////////////////////////////////////////
+#define GCONST GSL_CONST_MKSA_GRAVITATIONAL_CONSTANT
+#define GKMS (GCONST*1E-9)
+#define MSUN 1.9885E30/*kg*/
+#define YEAR (365.25*GSL_CONST_MKSA_DAY)
+#define DAY GSL_CONST_MKSA_DAY
+#define AU GSL_CONST_MKSA_ASTRONOMICAL_UNIT
+
+//////////////////////////////////////////
 //GLOBAL VARIABLES
 //////////////////////////////////////////
 static int NUMBER_OF_STEPS[]={2,4,6,8,12,16,24,32,48,64,96,128};
@@ -46,6 +56,8 @@ double REARTH;
 double RPEARTH;
 double FEARTH;
 gsl_rng* RAND;
+double GGLOBAL;
+double UL,UM,UT,UV;
 
 //////////////////////////////////////////
 //ROUTINES
@@ -106,7 +118,7 @@ char* vec2strn(double vec[],int n,char frm[]="%.8e")
   int i;
   char format[100];
   char *str=(char*)calloc(sizeof(char),100*n);
-  sprintf(format,"%ss %s","%",frm);
+  sprintf(format,"%ss%s","%",frm);
   for(i=0;i<n;i++) sprintf(str,format,str,vec[i]);
   return str;
 }
@@ -216,6 +228,48 @@ SpiceDouble t2jd(SpiceDouble t,int et=0)
 }
 
 /*
+  Matrix to convert from planetocentric celestial coordinates to
+  horizontal coordinates and viceversa.
+
+  See discussion at:
+  https://naif.jpl.nasa.gov/pipermail/spice_discussion/2010-July/000307.html
+
+  h2m: converts from geocentric to topocentric
+  h2i: converts from topocentric to geocentric
+ */
+void hormat(SpiceDouble lat,SpiceDouble lon,SpiceDouble t,SpiceDouble h2m[3][3],SpiceDouble h2i[3][3])
+{
+  SpiceDouble geopos[3],normal[3],normalJ2000[3],normalEpoch[3];
+  SpiceDouble ux[]={1,0,0},uy[]={0,1,0},uz[]={0,0,1},uzJ2000[3],uzEpoch[3];
+  SpiceDouble M_J2000_Epoch[3][3]={{1,0,0},{0,1,0},{0,0,1}};
+  SpiceDouble M_ITRF93_J2000[3][3];
+
+  //TRANSFORM MATRICES
+  pxform_c("J2000","EARTHTRUEEPOCH",t,M_J2000_Epoch);
+  pxform_c("ITRF93","J2000",t,M_ITRF93_J2000);
+  
+  //NORMAL ITRF93
+  georec_c(D2R(lon),D2R(lat),0.0,REARTH,FEARTH,geopos);
+  surfnm_c(REARTH,REARTH,RPEARTH,geopos,normal);
+
+  //NORMAL EPOCH
+  mxv_c(M_ITRF93_J2000,normal,normalJ2000);
+  mxv_c(M_J2000_Epoch,normalJ2000,normalEpoch);
+
+  //Z EPOCH
+  mxv_c(M_ITRF93_J2000,uz,uzJ2000);
+  mxv_c(M_J2000_Epoch,uzJ2000,uzEpoch);
+
+  //TRANSFORM MATRICES
+  ucrss_c(normalEpoch,uzEpoch,uy);
+  ucrss_c(uy,normalEpoch,ux);
+  h2m[0][0]=ux[0];h2m[0][1]=ux[1];h2m[0][2]=ux[2];
+  h2m[1][0]=uy[0];h2m[1][1]=uy[1];h2m[1][2]=uy[2];
+  h2m[2][0]=normalEpoch[0];h2m[2][1]=normalEpoch[1];h2m[2][2]=normalEpoch[2];
+  invert_c(h2m,h2i);
+}
+
+/*
   Matrix to convert from planetocentric coordinates to horizontal
   coordinates and viceversa.
 
@@ -225,17 +279,37 @@ SpiceDouble t2jd(SpiceDouble t,int et=0)
   h2m: converts from geocentric to topocentric
   h2i: converts from topocentric to geocentric
  */
-void hormat(SpiceDouble lat,SpiceDouble lon,SpiceDouble h2m[3][3],SpiceDouble h2i[3][3])
+void horgeo(SpiceDouble lat,SpiceDouble lon,SpiceDouble h2m[3][3],SpiceDouble h2i[3][3])
 {
-  SpiceDouble geopos[3],normal[3],ux[]={1,0,0},uy[]={0,1,0},uz[]={0,0,1};
+  SpiceDouble geopos[3],normal[3];
+  SpiceDouble ux[]={1,0,0},uy[]={0,1,0},uz[]={0,0,1};
+
+  //NORMAL ITRF93
   georec_c(D2R(lon),D2R(lat),0.0,REARTH,FEARTH,geopos);
   surfnm_c(REARTH,REARTH,RPEARTH,geopos,normal);
+
+  //TRANSFORM MATRICES
   ucrss_c(normal,uz,uy);
   ucrss_c(uy,normal,ux);
   h2m[0][0]=ux[0];h2m[0][1]=ux[1];h2m[0][2]=ux[2];
   h2m[1][0]=uy[0];h2m[1][1]=uy[1];h2m[1][2]=uy[2];
   h2m[2][0]=normal[0];h2m[2][1]=normal[1];h2m[2][2]=normal[2];
   invert_c(h2m,h2i);
+}
+
+/*
+  Transform from rectangular position to spherical position using the
+  astronomical convention of Azimuth.
+ */
+int rec2hor(double pos[],double *Az,double *h)
+{
+  double phi,tmp;
+  pos[1]*=-1;
+  reclat_c(pos,&tmp,Az,h);
+  if(*Az<0) *Az+=2*M_PI;
+  *h=R2D(*h);
+  *Az=R2D(*Az);
+  return 0;
 }
 
 int copyVec(double tgt[],double src[],int n)
@@ -396,7 +470,7 @@ int Gragg_Bulirsch_Stoer(int (*f)(double,double*,double*,void*),
       if(err<0) return err-1;
     }
     
-    sumVec(dest,1.0/yscale,y1,-1.0/yscale,old_est,1);
+    sumVec(dest,1.0/yscale,y1,-1.0/yscale,old_est,order);
     destmax=maxAbsVec(dest,order);
 
     if(destmax<epsilon){
@@ -406,4 +480,12 @@ int Gragg_Bulirsch_Stoer(int (*f)(double,double*,double*,void*),
     }
   }
   return -1;
+}
+
+double energy2B(double X[])
+{
+  double v=vnorm_c(X+3);
+  double r=vnorm_c(X);
+  double E=0.5*v*v-1/r;
+  return E;
 }

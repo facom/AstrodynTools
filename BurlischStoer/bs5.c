@@ -191,7 +191,7 @@ int Gragg_Bulirsch_Stoer(int (*f)(double,double*,double*,void*),
       if(err<0) return err-1;
     }
     
-    sumVec(dest,1.0/yscale,y1,-1.0/yscale,old_est,1);
+    sumVec(dest,1.0/yscale,y1,-1.0/yscale,old_est,order);
     destmax=maxAbsVec(dest,order);
 
     if(destmax<epsilon){
