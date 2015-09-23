@@ -2,6 +2,15 @@
 DIR=$(pwd)
 
 ########################################
+#INSTALL MAKEFILE
+########################################
+if [ ! -e makefile ];then
+    cp makefile.in makefile
+    echo "Adjust your architecture in makefile..."
+    exit 0
+fi
+
+########################################
 #INSTALL GSL
 ########################################
 echo "Installing GSL..."
@@ -22,13 +31,19 @@ cd $DIR
 #INSTALL CSPICE
 ########################################
 echo "Installing SPICE..."
-if [ ! -e util/lib/cspice.a ];then
+if [ ! -e util/lib/cspice32.a ];then
     cd util
-    tar zxf cspice.tar.gz
+    tar zxf cspice-32.tar.gz
     cd cspice
-    ./makeall.csh
     mv include/* ../include
-    mv lib/* ../lib
+    mv lib/cspice.a ../lib/cspice32.a
+    mv lib/csupport.a ../lib/csupport32.a
+    cd ..
+    rm -rf cspice
+    tar zxf cspice-64.tar.gz
+    cd cspice
+    mv lib/cspice.a ../lib/cspice64.a
+    mv lib/csupport.a ../lib/csupport64.a
     cd ..
     rm -rf cspice
     echo "Done."
@@ -78,7 +93,7 @@ cd $DIR
 #INSTALL PYTHON NOVAS
 ########################################
 echo "Installing C Novas..."
-if [ ! -d util/lib/novas.a ];then
+if [ ! -e util/lib/novas.a ];then
     cd util
     tar zxf novasc.tgz
     cd novasc
