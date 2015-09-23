@@ -1,9 +1,4 @@
 #include <gravray.cpp>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <novas.h>
-#include <SpiceUsr.h>
 using namespace std;
 
 int main(int argc,char* argv[])
@@ -32,7 +27,9 @@ int main(int argc,char* argv[])
 
     Example:
 
-       ./whereami 6.2 -75.34 1450.0 "07/19/2015 00:00:00.000 UTC-5"
+       ./whereami.exe 6.2 -75.34 1450.0 45.0 0.0 1.0 "07/19/2015 00:00:00.000 UTC-5"
+
+       ./whereami.exe 0.0 0.0 1560.0 45.0 0.0 1.0 "07/19/2015 10:00:00.000 UTC"
   */
   SpiceChar date[100];
   SpiceDouble lat=atof(argv[1]);
@@ -65,7 +62,6 @@ int main(int argc,char* argv[])
   //OBSERVER POSITION W.R.T. EARTH CENTER IN ITRF93
   georec_c(D2R(lon),D2R(lat),alt/1000.0,REARTH,FEARTH,observerITRF93);
   printf("Position observer w.r.t. ITRF93: %s\n",vec2str(observerITRF93,"%.17e"));
-  
 
   ////////////////////////////////////////////////////
   //GET TOPOCENTRIC TRANSFORM MATRIX
@@ -96,7 +92,6 @@ int main(int argc,char* argv[])
   //TOTAL VELOCITY WITH RESPECT ITRF93
   vadd_c(vrotitrf93,vmotitrf93,observerITRF93+3);
   printf("\tVelocity total w.r.t. ITRF93: %s\n",vec2str(observerITRF93+3,"%.17e"));
-
 
   //OBSERVER POSITION AND VELOCITY W.R.T. EARTH CENTER IN J2000 RF
   mxv_c(M_ITRF93_J2000,observerITRF93,observerJ2000);

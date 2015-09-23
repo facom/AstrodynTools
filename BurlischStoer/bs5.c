@@ -8,11 +8,11 @@
 #include <string.h>
 //*
 #define ATTEMPTS 12
-static int number_of_steps[]={2,4,6,8,12,16,24,32,48,64,96,128};
+static int NUMBER_OF_STEPS[]={2,4,6,8,12,16,24,32,48,64,96,128};
 //*/
 /*
 #define ATTEMPTS 16
-static int number_of_steps[]={2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32};
+static int NUMBER_OF_STEPS[]={2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32};
 //*/
 
 char* strVec(double a[],int n)
@@ -42,8 +42,7 @@ int copyVec(double tgt[],double src[],int n)
 int sumVec(double c[],double ca,double a[],double cb,double b[],int n)
 {
   int i;
-  for(i=n;i-->0;)
-    c[i]=ca*a[i]+cb*b[i];
+  for(i=n;i-->0;) c[i]=ca*a[i]+cb*b[i];
   return 0;
 }
 
@@ -120,33 +119,32 @@ static int Polynomial_Extrapolation_to_Zero(double *fzero,double tableau[],
 static int Graggs_Method(int (*f)(double,double*,double*,void*),
 			 double y0[],
 			 double t0,double t,
-			 int number_of_steps,
+			 int NUMBER_OF_STEPS,
 			 void *params,
 			 double yres[]) {
   
   double* pars=(double*)params;
   int order=(int)pars[0],i;
-  double y1[order],y05[order],y15[order],y2[order],y25[order],yaux[order];
-  double h=(t-t0)/(double)number_of_steps;
+  double y1[order],dydt[order],y2[order],yaux[order];
+  double h=(t-t0)/(double)NUMBER_OF_STEPS;
   double h2=h+h;
 
   copyVec(yaux,y0,order);
-  (*f)(t0,yaux,y05,params);
-  sumVec(y1,1,yaux,h,y05,order);
+  (*f)(t0,yaux,dydt,params);
+  sumVec(y1,1,yaux,h,dydt,order);
 
-  while(--number_of_steps) {
+  while(--NUMBER_OF_STEPS) {
     t0+=h;
-    (*f)(t0,y1,y15,params);
-    sumVec(y2,1,yaux,h2,y15,order);
+    (*f)(t0,y1,dydt,params);
+    sumVec(y2,1,yaux,h2,dydt,order);
     copyVec(yaux,y1,order);
     copyVec(y1,y2,order);
   } 
 
-  (*f)(t,y1,y25,params);
+  (*f)(t,y1,dydt,params);
 
-  //yres=0.5*(yaux+y1+h*y25);
   sumVec(yres,0.5,yaux,0.5,y1,order);
-  sumVec(yres,1,yres,0.5*h,y25,order);
+  sumVec(yres,1,yres,0.5*h,dydt,order);
   return 0;
 }
 
@@ -173,8 +171,8 @@ int Gragg_Bulirsch_Stoer(int (*f)(double,double*,double*,void*),
   if(rational_extrapolate) Extrapolate=Rational_Extrapolation_to_Zero;
   else Extrapolate=Polynomial_Extrapolation_to_Zero;
  
-  Graggs_Method(f,y0,t,t+h,number_of_steps[0],params,est);
-  step_size2[0]=(dum=h/(double)number_of_steps[0],dum*dum);
+  Graggs_Method(f,y0,t,t+h,NUMBER_OF_STEPS[0],params,est);
+  step_size2[0]=(dum=h/(double)NUMBER_OF_STEPS[0],dum*dum);
   
   copyVec(y1,est,order);
   
@@ -185,8 +183,8 @@ int Gragg_Bulirsch_Stoer(int (*f)(double,double*,double*,void*),
 
   for(i = 1; i < ATTEMPTS; i++) {
     copyVec(old_est,y1,order);
-    Graggs_Method(f,y0,t,t+h,number_of_steps[i],params,est);
-    step_size2[i]=(dum=h/(double)number_of_steps[i],dum*dum);
+    Graggs_Method(f,y0,t,t+h,NUMBER_OF_STEPS[i],params,est);
+    step_size2[i]=(dum=h/(double)NUMBER_OF_STEPS[i],dum*dum);
 
     for(j=order;j-->0;){
       err=Extrapolate(&y1[j],tableau[j],step_size2,est[j],i);
@@ -197,7 +195,7 @@ int Gragg_Bulirsch_Stoer(int (*f)(double,double*,double*,void*),
     destmax=maxAbsVec(dest,order);
 
     if(destmax<epsilon){
-      if(i>1) *h_new=8.0*h/(double)number_of_steps[i-1];
+      if(i>1) *h_new=8.0*h/(double)NUMBER_OF_STEPS[i-1];
       else *h_new=h;
       return 0;
     }
