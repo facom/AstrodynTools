@@ -1,9 +1,5 @@
-UTILDIR=../util
-CPP=g++
-CC=gcc
-CFLAGS=-g -I. -w -I$(UTILDIR)/include -I$(UTILDIR)/include/gsl
-#LFLAGS=-lm $(UTILDIR)/lib/novas.a $(UTILDIR)/lib/cspice.a $(UTILDIR)/lib/csupport.a $(UTILDIR)/lib/libgsl.a $(UTILDIR)/lib/libgslcblas.a 
-LFLAGS=-g -lm $(UTILDIR)/lib/cspice.a $(UTILDIR)/lib/csupport.a -L $(UTILDIR) -lgsl -lgslcblas
+
+include ../compiler
 
 clean:
 	@echo "Cleaning..."
