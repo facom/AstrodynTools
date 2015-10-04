@@ -52,6 +52,14 @@ else
 fi
 cd $DIR
 
+echo "Installing Huge Kernels..."
+if [ ! -e util/kernels/de430.bsp ];then
+    echo "Unsplitting kernel de430.bsp..."
+    cat util/kernels/de430.bsp.split/* > util/kernels/de430.bsp
+else
+    echo "Kernel already unsplitted..."
+fi
+
 ########################################
 #DOWNLOAD MERCUPY
 ########################################
